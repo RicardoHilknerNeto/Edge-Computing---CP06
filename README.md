@@ -1,70 +1,55 @@
-# Projeto de Monitoramento de Dados com Arduino e MQTT
+# README - Vinheria IoT Solution
 
-Este projeto combina a funcionalidade de um sensor DHT (umidade e temperatura) com a comunicação MQTT para monitorar e publicar dados de um sensor DHT em um servidor MQTT. Além disso, ele controla um LED com base na temperatura e na luminosidade ambiente.
+## Arquitetura da Solução
 
-## Requisitos de Hardware
+A solução da Vinheria é um sistema de monitoramento IoT que coleta dados de temperatura, umidade e luminosidade e os publica em um servidor MQTT. A arquitetura da solução envolve os seguintes componentes:
 
-- Placa Arduino compatível (testado com Arduino Uno)
-- Sensor DHT (modelo DHT11)
-- Sensor de Luminosidade (LDR)
-- LED
-- Conexão com a Internet (Wi-Fi)
+- **Hardware:**
+  - **ESP32**: O código fornecido é projetado para ser executado em um ESP32, um microcontrolador WiFi/Bluetooth que lê dados de sensores DHT e um sensor de luminosidade.
+  - **DHT Sensor (DHT11)**: O sensor de temperatura e umidade é conectado ao ESP32 para medir as condições do ambiente.
+  - **LDR (Light-Dependent Resistor)**: Um sensor de luminosidade é usado para medir a quantidade de luz no ambiente.
+  - **LEDs**: Três LEDs são usados para indicar a condição do ambiente com base na temperatura.
 
-## Requisitos de Software
+- **Software:**
+  - **Arduino IDE**: O código é desenvolvido e carregado no ESP32 usando o ambiente de desenvolvimento Arduino IDE.
+  - **PubSubClient Library**: Esta biblioteca é utilizada para conectar-se ao servidor MQTT e publicar dados.
+  - **WiFi Library**: A biblioteca WiFi é usada para configurar e estabelecer a conexão Wi-Fi.
 
-- Plataforma Arduino IDE
-- Bibliotecas: WiFi, PubSubClient e DHT
+- **Servidor MQTT:**
+  - A solução se comunica com um servidor MQTT externo (definido no código como `BROKER_MQTT` e `BROKER_PORT`).
 
-## Configuração
+## Manual de Utilização
 
-Antes de carregar o código no seu Arduino, certifique-se de que os seguintes passos foram seguidos:
+Para utilizar a solução da Vinheria, siga estas etapas:
 
-1. **Configuração do Hardware:**
-   - Conecte o sensor DHT ao pino 13 do Arduino.
-   - Conecte o LED ao pino 12 do Arduino.
-   - Conecte o sensor de luminosidade (LDR) ao pino 14 do Arduino.
+1. **Hardware Setup:**
+   - Conecte o sensor DHT11 ao pino 13 do ESP32.
+   - Conecte o sensor de luminosidade ao pino 14 do ESP32.
+   - Conecte os LEDs aos pinos 12, 27 e 26 para vermelho, amarelo e verde, respectivamente.
 
-2. **Instalação das Bibliotecas:**
-   - Abra a plataforma Arduino IDE.
-   - Vá para "Sketch" > "Incluir Biblioteca" > "Gerenciar Bibliotecas".
-   - Procure e instale as bibliotecas "WiFi", "PubSubClient" e "DHT".
+2. **Configuração do Software:**
+   - Abra o código fornecido na Arduino IDE.
+   - Configure as constantes `SSID` e `PASSWORD` com as informações da sua rede Wi-Fi.
+   - Configure `BROKER_MQTT` e `BROKER_PORT` com as informações do servidor MQTT.
 
-3. **Configuração do WiFi e MQTT:**
-   - Defina o SSID da sua rede Wi-Fi e a senha no código, nas variáveis `SSID` e `PASSWORD`.
-   - Configure o endereço IP do servidor MQTT no código, na variável `BROKER_MQTT`.
-   - Defina o nome de identificação MQTT no código, na variável `ID_MQTT`.
+3. **Carregamento do Código:**
+   - Carregue o código no ESP32 usando a Arduino IDE.
 
-## Funcionamento
+4. **Monitoramento:**
+   - O ESP32 irá ler os sensores periodicamente e publicar dados no servidor MQTT.
+   - Os dados são publicados em três tópicos: `TOPICO_PUBLISH` (luminosidade), `TOPICO_PUBLISH_2` (temperatura) e `TOPICO_PUBLISH_3` (umidade).
 
-O código realiza as seguintes ações:
+5. **Visualização dos Dados:**
+   - Configure um cliente MQTT para se inscrever nos tópicos mencionados e visualize os dados coletados.
 
-1. Inicializa o sensor DHT e os dispositivos de saída (LED).
+6. **Controle dos LEDs:**
+   - Com base na temperatura medida, os LEDs indicarão a condição do ambiente:
+     - Temperatura <= 10: LED verde aceso.
+     - Temperatura entre 11 e 20: LED amarelo aceso.
+     - Temperatura > 20: LED vermelho aceso.
 
-2. Conecta-se à rede Wi-Fi.
+## Observações
 
-3. Conecta-se ao servidor MQTT.
+Certifique-se de configurar as informações da rede Wi-Fi e do servidor MQTT antes de carregar o código no ESP32. Além disso, verifique se os pinos dos componentes estão corretamente conectados ao ESP32.
 
-4. Lê os dados do sensor DHT (temperatura e umidade).
-
-5. Publica os dados no servidor MQTT em três tópicos diferentes:
-   - `/TEF/agnelo/attrs/l` para a temperatura.
-   - `/TEF/agnelo/attrs/t` para a umidade.
-   - `/TEF/agnelo/attrs/u` para ambos os valores.
-
-6. Lê o valor de luminosidade e controla o LED com base na temperatura e na luminosidade.
-
-7. Repete o processo a cada 60 segundos.
-
-## Uso
-
-1. Carregue o código no seu Arduino usando a plataforma Arduino IDE.
-
-2. Certifique-se de que o Arduino esteja conectado à sua rede Wi-Fi.
-
-3. Os dados do sensor DHT serão publicados no servidor MQTT especificado.
-
-4. O LED será ligado se a temperatura for maior ou igual a 38°C e a luminosidade for baixa; caso contrário, o LED permanecerá desligado.
-
-## Licença
-
-Este código é fornecido sob a [licença MIT](LICENSE).
+A solução da Vinheria oferece monitoramento ambiental em tempo real e pode ser estendida para integração com sistemas de automação ou notificação. Certifique-se de adaptar e personalizar o código e a arquitetura conforme necessário para atender aos requisitos específicos do seu projeto.
